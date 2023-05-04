@@ -5,13 +5,8 @@ import { useDispatch } from 'react-redux';
 import { deleteUser } from 'redux/users/userSlice';
 
 const ContactList = () => {
-  const contactUser = useSelector(getUsers);
-  const filteredUser = useSelector(getFilteredUser);
+  const visibleContacts = useSelector(selectFilteredUsers);
   const dispatch = useDispatch();
-  const normalizeFilteredUser = filteredUser.toLowerCase();
-  const visibleContacts = contactUser.filter(el =>
-    el.name.toLowerCase().includes(normalizeFilteredUser)
-  );
 
   return (
     <ul>

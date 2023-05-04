@@ -1,8 +1,10 @@
 import { FilterInput, FilterLabel } from './Filter.styled';
 import { useDispatch } from 'react-redux';
-import { getVisibleContact } from 'redux/filter/filterSlice';
+import { changeFilterValue } from 'redux/filter/filterSlice';
+// import { selectFilter } from 'redux/filter/selectors';
 
 const Filter = () => {
+  // const filter = useSelector(selectFilter);
   const dispatch = useDispatch();
   return (
     <>
@@ -10,7 +12,8 @@ const Filter = () => {
         Find contacts by name
         <FilterInput
           type="text"
-          onChange={e => dispatch(getVisibleContact(e.target.value))}
+          onChange={e => dispatch(changeFilterValue(e.target.value))}
+          value={filter}
         />
       </FilterLabel>
     </>

@@ -3,11 +3,11 @@ import { nanoid } from 'nanoid';
 import { AddBtn, Form } from './ContactFrom.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUser } from 'redux/users/userSlice';
-import { getUsers } from 'redux/users/userSelectors';
+import { selectUsers } from 'redux/users/userSelectors';
 
 export const ContactForm = () => {
   const [user, setUser] = useState({ name: '', number: '' });
-  const contactUser = useSelector(getUsers);
+  const contactUser = useSelector(selectUsers);
   const dispatch = useDispatch();
 
   const handleInputNameChange = e => {
