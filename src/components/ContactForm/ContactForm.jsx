@@ -1,78 +1,90 @@
 import { useState } from 'react';
 import { nanoid } from 'nanoid';
-import { AddBtn, Form } from './ContactFrom.styled';
+
+import { Form } from './ContactForm.styled';
+import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { addUser } from 'redux/users/userSlice';
-import { selectUsers } from 'redux/users/userSelectors';
+import { addContact } from 'redux/contactsSlice/contactsSlice';
 
-export const ContactForm = () => {
-  const [user, setUser] = useState({ name: '', number: '' });
-  const contactUser = useSelector(selectUsers);
+export function ContactForm() {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contact);
 
-  const handleInputNameChange = e => {
-    setUser({ ...user, name: e.currentTarget.value });
+  const handleInputChange = (value, name) => {
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        return;
+    }
   };
 
-  const handleInputTelChange = e => {
-    setUser({ ...user, number: e.currentTarget.value });
-  };
-
-  const handleFormSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const ContactId = nanoid();
 
-    const contact = {
-      name: user.name,
-      id: ContactId,
-      number: user.number,
+    if (contacts.find(el => el.name.toLowerCase() === name.toLowerCase())) {
+      return toast.info(`${name} is already in contacts.`);
+    } else if (
+      contacts.find(el => el.number.toLowerCase() === number.toLowerCase())
+    ) {
+      return toast.info(`${number} is already in contacts.`);
+    }
+
+    const newContact = {
+      id: nanoid(),
+      name,
+      number,
     };
 
-    if (contactUser.find(item => item.name === user.name)) {
-      alert(`${user.name} is already in contacts.`);
-      return;
-    } else if (contactUser.find(item => item.number === user.number)) {
-      alert(`${user.number} is already in contacts.`);
-      return;
-    }
-    dispatch(addUser(contact));
+    dispatch(addContact(newContact));
     resetForm();
   };
 
   const resetForm = () => {
-    setUser({ name: '', number: '' });
+    setName('');
+    setNumber('');
   };
 
   return (
-    <>
-      <Form action="" onSubmit={handleFormSubmit}>
-        <label htmlFor="name">
-          <p>Name</p>
-          <input
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-            onChange={handleInputNameChange}
-            value={user.name}
-          />
-        </label>
-        <label htmlFor="number">
-          <p>Number</p>
-          <input
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-            onChange={handleInputTelChange}
-            value={user.number}
-          />
-        </label>
-
-        <AddBtn type="submit">Add contact</AddBtn>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit}>
+      <label>
+        Name
+        <input
+          type="text"
+          name="name"
+          value={name}
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          required
+          onChange={e => {
+            handleInputChange(e.target.value, e.target.name);
+          }}
+        />
+      </label>
+      <label>
+        Number
+        <input
+          type="tel"
+          name="number"
+          value={number}
+          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          required
+          onChange={e => {
+            handleInputChange(e.target.value, e.target.name);
+          }}
+        />
+      </label>
+      <button type="submit">Add contact</button>
+    </Form>
   );
-};
+}

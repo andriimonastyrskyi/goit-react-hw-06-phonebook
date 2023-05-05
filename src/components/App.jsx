@@ -1,17 +1,26 @@
-import Filter from './Filter/Filter';
-import ContactList from './ContactList/ContactList';
-import { ContactForm } from './ContactForm/ContactForm';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export const App = () => {
+import { ContactForm } from './ContactForm/ContactForm';
+import { ContactList } from './ContactList/ContactList';
+import { Filter } from './ContactList/Filter/Filter';
+import { useSelector } from 'react-redux';
+
+export function App() {
+  const contacts = useSelector(state => state.contact);
+
   return (
-    <>
-      <div>
-        <h1>Phonebook</h1>
-        <ContactForm />
-        <h2>Contacts</h2>
-        <Filter />
-        <ContactList />
-      </div>
-    </>
+    <section>
+      <h1>Phonebook</h1>
+      <ContactForm />
+      {contacts.length > 0 && (
+        <>
+          <h2>Contacts</h2>
+          <Filter />
+          <ContactList />
+          <ToastContainer />
+        </>
+      )}
+    </section>
   );
-};
+}

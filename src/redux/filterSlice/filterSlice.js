@@ -6,9 +6,9 @@ export const filterSlice = createSlice({
   name: 'filter',
   initialState: initialFilterState,
   reducers: {
-    changeFilterValue: (state, { payload }) => payload,
+    getVisibleContact: (state, { payload }) => (state = payload),
   },
 });
 
-export const { changeFilterValue } = filterSlice.actions;
+export const { getVisibleContact } = filterSlice.actions;
 export const filterReducer = filterSlice.reducer;

@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { userReducer } from './users/userSlice';
 import {
   persistStore,
   persistReducer,
@@ -11,7 +10,8 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { filterReducer } from './filter/filterSlice';
+
+import { reducer } from './reducer';
 
 const persistConfig = {
   key: 'root',
@@ -19,22 +19,10 @@ const persistConfig = {
   blacklist: ['filter'],
 };
 
-// const persistFilterConfig = {
-//   key: 'filter',
-//   storage,
-// };
-
-const persistedReducer = persistReducer(persistConfig, userReducer);
-// const persistedFilterReducer = persistReducer(
-//   persistFilterConfig,
-//   filterReducer
-// );
+const persistedReducer = persistReducer(persistConfig, reducer);
 
 export const store = configureStore({
-  reducer: {
-    users: persistedReducer,
-    filter: filterReducer,
-  },
+  reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -42,5 +30,4 @@ export const store = configureStore({
       },
     }),
 });
-
 export const persistor = persistStore(store);

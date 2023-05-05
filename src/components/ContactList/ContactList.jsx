@@ -1,29 +1,37 @@
-import { useSelector } from 'react-redux';
-import { getFilteredUser, getUsers } from 'redux/users/userSelectors';
-import { DeleteBtn } from './ContactList.styled';
-import { useDispatch } from 'react-redux';
-import { deleteUser } from 'redux/users/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact } from 'redux/contactsSlice/contactsSlice';
 
-const ContactList = () => {
-  const visibleContacts = useSelector(selectFilteredUsers);
+import { Item } from './ContactList.styled';
+
+export function ContactList() {
+  const filter = useSelector(state => state.filter);
+  const contacts = useSelector(state => state.contact);
   const dispatch = useDispatch();
+
+  const normalizeFilter = filter.toLowerCase();
+  const visibleContacts = contacts.filter(el =>
+    el.name.toLowerCase().includes(normalizeFilter)
+  );
 
   return (
     <ul>
-      {visibleContacts.map(({ id, number, name }) => {
+      {visibleContacts.map(({ id, name, number }) => {
         return (
-          <li key={id}>
-            <span>
+          <Item key={id}>
+            <p>
               {name}: {number}
-            </span>
-            <DeleteBtn type="button" onClick={() => dispatch(deleteUser(id))}>
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                dispatch(deleteContact(id));
+              }}
+            >
               Delete
-            </DeleteBtn>
-          </li>
+            </button>
+          </Item>
         );
       })}
     </ul>
   );
-};
-
-export default ContactList;
+}
